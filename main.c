@@ -30,19 +30,19 @@ void processar_e_exibir_relatorio() {
             i++;
             indice_texto++;
         }
-        produtos[qtd_produtos].nome[i] = '\0'; // Finaliza a string do nome do produto
+        produtos[qtd_produtos].nome[i] = '\0';
         
-        indice_texto++; // Pula a vírgula do nome
+        indice_texto++; 
 
         int caracteres_lidos;
         sscanf(&dados[indice_texto], "%d%n", &produtos[qtd_produtos].quantidade, &caracteres_lidos);
-        indice_texto += caracteres_lidos; // Avança o índice pelo tamanho do número lido
+        indice_texto += caracteres_lidos; 
         
-        indice_texto++; // Pula a vírgula da quantidade
+        indice_texto++;
 
 
         sscanf(&dados[indice_texto], "%f%n", &produtos[qtd_produtos].preco_unitario, &caracteres_lidos);
-        indice_texto += caracteres_lidos; // Avança o índice pelo tamanho do preço lido
+        indice_texto += caracteres_lidos; 
 
         produtos[qtd_produtos].total_vendas = produtos[qtd_produtos].quantidade * produtos[qtd_produtos].preco_unitario;
         faturamento_total += produtos[qtd_produtos].total_vendas;
