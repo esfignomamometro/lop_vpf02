@@ -11,44 +11,43 @@ typedef struct {
     float total_vendas;
 } Produto;
 
-void processar_e_exibir_relatorio() {
-    char dados[] = "Caderno,10,5.00Caneta,20,2.50Lápis,15,1.00Borracha,5,0.50Régua,8,3.00Calculadora,3,25.00";
+void gerar_relatorio() {
+    FILE *arq = fopen("vendas.csv", "r");
     
+    if (arq == NULL) {
+        printf("Erro: Nao foi possivel abrir o arquivo vendas.csv!\n");
+        return;
+    }
+
     Produto produtos[MAX_PRODUTOS];
     int qtd_produtos = 0;
     float faturamento_total = 0;
-    
-    int tamanho_texto = strlen(dados);
-    int indice_texto = 0;
 
+    char cabecalho[100];
+    fgets(cabecalho, sizeof(cabecalho), arq);
 
-    while (indice_texto < tamanho_texto && qtd_produtos < MAX_PRODUTOS) {
+    char c;
+
+    while ((c = fgetc(arq)) != EOF && qtd_produtos < MAX_PRODUTOS) {
         
         int i = 0;
-        while (dados[indice_texto] != ',' && indice_texto < tamanho_texto) {
-            produtos[qtd_produtos].nome[i] = dados[indice_texto];
+        while (c != ',' && c != EOF) {
+            produtos[qtd_produtos].nome[i] = c;
             i++;
-            indice_texto++;
+            c = fgetc(arq);
         }
         produtos[qtd_produtos].nome[i] = '\0';
-        
-        indice_texto++; 
 
-        int caracteres_lidos;
-        sscanf(&dados[indice_texto], "%d%n", &produtos[qtd_produtos].quantidade, &caracteres_lidos);
-        indice_texto += caracteres_lidos; 
-        
-        indice_texto++;
-
-
-        sscanf(&dados[indice_texto], "%f%n", &produtos[qtd_produtos].preco_unitario, &caracteres_lidos);
-        indice_texto += caracteres_lidos; 
+        fscanf(arq, "%d,", &produtos[qtd_produtos].quantidade);
+        fscanf(arq, "%f", &produtos[qtd_produtos].preco_unitario);
 
         produtos[qtd_produtos].total_vendas = produtos[qtd_produtos].quantidade * produtos[qtd_produtos].preco_unitario;
         faturamento_total += produtos[qtd_produtos].total_vendas;
         
         qtd_produtos++;
     }
+
+    fclose(arq);
 
     printf("=====================================================================\n");
     printf("                       RELATÓRIO DE VENDAS                           \n");
@@ -70,6 +69,6 @@ void processar_e_exibir_relatorio() {
 }
 
 int main() {
-    processar_e_exibir_relatorio();
+    gerar_relatorio();
     return 0;
 }
